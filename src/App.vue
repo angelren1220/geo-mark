@@ -1,15 +1,15 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <img alt="Vue logo" src="./assets/google-map-logo.png">
+  <LocationSearch msg="Welcome to GeoMark App"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import LocationSearch from './components/LocationSearch.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    LocationSearch
   }
 }
 </script>
