@@ -1,14 +1,18 @@
 <template>
   <img alt="Vue logo" src="./assets/google-map-logo.png">
-  <LocationSearch msg="Welcome to GeoMark App"/>
+  <h1>Welcome to GeoMark</h1>
+  <CurrentLocation />
+  <LocationSearch />
 </template>
 
 <script>
+import CurrentLocation from './components/CurrentLocation.vue'
 import LocationSearch from './components/LocationSearch.vue';
 
 export default {
   name: 'App',
   components: {
+    CurrentLocation,
     LocationSearch
   }
 }
