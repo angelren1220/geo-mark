@@ -1,6 +1,6 @@
 <template>
   <div class="current-location">
-    <button @click="getCurrentLocation">Get Current Location</button>
+    <i class="map marker alternate icon location-icon" @click="getCurrentLocation"></i>
     <!-- Displaying the latitude and longitude -->
     <div v-if="location">
       Latitude: {{ location.lat }}, Longitude: {{ location.lng }}
@@ -30,15 +30,11 @@ export default {
 }
 
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.current-location {
-  display: flex;
-  gap: 10px;
+.location-icon:hover {
+  color: red;
 }
 </style>
-
 
 
