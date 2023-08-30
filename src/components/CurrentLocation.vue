@@ -25,7 +25,9 @@
       <table class="ui celled table">
         <thead>
           <tr>
-            <th>Select</th>
+            <th>
+              <button class="ui button" @click="deleteSelected">Delete Selected</button>
+            </th>
             <th>Searched Places</th>
           </tr>
         </thead>
@@ -57,6 +59,7 @@
 <script>
 /* eslint-disable no-undef, no-unused-vars */
 import axios from 'axios';
+import { toRaw } from 'vue';
 const apiKey = process.env.VUE_APP_GOOGLE_MAPS_API_KEY;
 
 export default {
@@ -72,7 +75,7 @@ export default {
       currentPage: 1,
       itemsPerPage: 10,
       timeZone: null,
-      localTime: null,
+      localTime: null
     };
   },
 
@@ -147,15 +150,16 @@ export default {
         });
     },
 
-    showCurrentLocationOnMap(lat, lng) {
+    showCurrentLocationOnMap(lat, lng, id) {
 
       this.map.panTo(new google.maps.LatLng(lat, lng));
 
       const newMarker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lng),
-        map: this.map
+        map: this.map,
+        id: id
       });
-
+      console.log("new marker id", newMarker.id);
       this.markers.push(newMarker);
     },
 
@@ -163,11 +167,12 @@ export default {
       if (this.searchLocation && this.searchLocation.geometry) {
         const lat = this.searchLocation.geometry.location.lat();
         const lng = this.searchLocation.geometry.location.lng();
-        this.showCurrentLocationOnMap(lat, lng);
-
+        const id = Date.now();
+        this.showCurrentLocationOnMap(lat, lng, id);
+        console.log("newId is", id);
         // Save to searchedPlaces
         this.searchedPlaces.push({
-          id: Date.now(),
+          id: id,
           name: this.searchLocation.name,
           lat: lat,
           lng: lng
@@ -190,6 +195,22 @@ export default {
       }
     },
 
+    deleteSelected() {
+      const selectedIds = this.searchedPlaces.filter(place => place.selected).map(place => place.id);
+
+      // Filter out markers that are not in the list of selected IDs and remove them from the map
+      this.markers = this.markers.filter(marker => {
+        if (selectedIds.includes(toRaw(marker).id)) {
+          toRaw(marker).setMap(null);
+          return false;
+        }
+        return true;
+      });
+
+      // Now, filter out the selected places from the searchedPlaces array
+      this.searchedPlaces = this.searchedPlaces.filter(place => !place.selected);
+    },
+
     fetchTimeZone(lat, lng) {
       const timestamp = Math.floor(Date.now() / 1000);
       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${apiKey}`)
@@ -201,6 +222,8 @@ export default {
           console.log("Error fetching timezone:", error);
         });
     },
+
+
 
     updateLocalTime(offsetInSeconds) {
       const date = new Date();
@@ -235,16 +258,16 @@ export default {
   right: 0;
   z-index: 1;
 }
+
 .localtime {
   position: absolute;
   top: 0;
   right: 0;
   z-index: 1;
-  border: solid 1px black; 
+  border: solid 1px black;
   background-color: white;
   padding: 5px;
 }
-
 </style>
 
 
