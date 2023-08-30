@@ -44,6 +44,13 @@
 
     </section>
 
+    <!-- Time -->
+    <div v-if="timeZone && localTime" class="localtime">
+      <p>Last Search</p>
+      <p>Time Zone: {{ timeZone }}</p>
+      <p>Local Time: {{ localTime }}</p>
+    </div>
+
   </div>
 </template>
 
@@ -63,7 +70,9 @@ export default {
       searchedPlaces: [],
       selectedPlaces: [],
       currentPage: 1,
-      itemsPerPage: 10
+      itemsPerPage: 10,
+      timeZone: null,
+      localTime: null,
     };
   },
 
@@ -164,7 +173,9 @@ export default {
           lng: lng
         });
 
-        console.log(this.searchedPlaces);
+        //console.log(this.searchedPlaces);
+
+        this.fetchTimeZone(lat, lng);
       }
     },
 
@@ -177,6 +188,25 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
+    },
+
+    fetchTimeZone(lat, lng) {
+      const timestamp = Math.floor(Date.now() / 1000);
+      axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${apiKey}`)
+        .then(response => {
+          this.timeZone = response.data.timeZoneId;
+          this.updateLocalTime(response.data.rawOffset + response.data.dstOffset);  // raw offset + dst offset
+        })
+        .catch(error => {
+          console.log("Error fetching timezone:", error);
+        });
+    },
+
+    updateLocalTime(offsetInSeconds) {
+      const date = new Date();
+      const utcTime = date.getTime() + date.getTimezoneOffset() * 60000; // Convert local time to UTC in milliseconds
+      const localTimeInMilliseconds = utcTime + (offsetInSeconds * 1000);
+      this.localTime = new Date(localTimeInMilliseconds).toLocaleTimeString();
     }
 
 
@@ -205,6 +235,16 @@ export default {
   right: 0;
   z-index: 1;
 }
+.localtime {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  border: solid 1px black; 
+  background-color: white;
+  padding: 5px;
+}
+
 </style>
 
 
