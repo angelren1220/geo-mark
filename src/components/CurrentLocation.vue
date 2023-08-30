@@ -7,16 +7,10 @@
           <!-- Displaying the current address -->
           <div class="ui segment">
             <div class="field">
-              <input
-                type="text"
-                v-model="location"
-                placeholder="Enter location"
-                ref="autocomplete"
-                @keyup.enter="handleSearch"
-              />
+              <input type="text" v-model="location" placeholder="Enter location" ref="autocomplete" />
               <i class="map marker alternate icon location-icon" @click="getCurrentLocation"></i>
             </div>
-            <button class="ui button" @click="handleSearch">Search</button>
+            <button class="ui button">Search</button>
           </div>
         </form>
       </div>
@@ -25,6 +19,25 @@
     <!-- Map -->
     <section id="map">
     </section>
+
+    <!-- Table -->
+    <section class="pagination">
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Searched Places</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="place in searchedPlaces" :key="place.id">
+            <td><input type="checkbox" v-model="place.selected"></td>
+            <td>{{ place.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
   </div>
 </template>
 
@@ -39,7 +52,10 @@ export default {
     return {
       location: null,
       searchLocation: null,
-      markers: []
+      markers: [],
+      map: null,
+      searchedPlaces: [],
+      selectedPlaces: []
     };
   },
 
@@ -54,7 +70,7 @@ export default {
       });
 
     autocomplete.addListener("place_changed", () => {
-      
+
       this.searchLocation = autocomplete.getPlace();
 
     });
@@ -63,11 +79,11 @@ export default {
   methods: {
 
     initMap() {
-        this.map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: new google.maps.LatLng(43.6532, -79.3832),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
+      this.map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: new google.maps.LatLng(43.6532, -79.3832),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
     },
 
     getCurrentLocation() {
@@ -94,7 +110,7 @@ export default {
             console.log(response.data.error_message);
           } else {
             this.location = response.data.results[0].formatted_address;
-            console.log(this.location);
+            // console.log(this.location);
           }
         })
         .catch(error => {
@@ -103,7 +119,7 @@ export default {
     },
 
     showCurrentLocationOnMap(lat, lng) {
-      
+
       this.map.panTo(new google.maps.LatLng(lat, lng));
 
       const newMarker = new google.maps.Marker({
@@ -112,17 +128,26 @@ export default {
       });
 
       this.markers.push(newMarker);
-
-      for (let marker of this.markers) {
-        marker.setMap(map);
-    }
     },
 
     handleSearch() {
-        if (this.searchLocation && this.searchLocation.geometry) {
-            this.showCurrentLocationOnMap(this.searchLocation.geometry.location.lat(), this.searchLocation.geometry.location.lng());
-        }
-    },
+      if (this.searchLocation && this.searchLocation.geometry) {
+        const lat = this.searchLocation.geometry.location.lat();
+        const lng = this.searchLocation.geometry.location.lng();
+        this.showCurrentLocationOnMap(lat, lng);
+
+        // Save to searchedPlaces
+        this.searchedPlaces.push({
+          id: Date.now(),
+          name: this.searchLocation.name,
+          lat: lat,
+          lng: lng
+        });
+
+        console.log(this.searchedPlaces);
+      }
+    }
+
 
   }
 }
@@ -141,6 +166,13 @@ export default {
   left: 0;
   right: 0;
   background: #136F63;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
 }
 </style>
 
