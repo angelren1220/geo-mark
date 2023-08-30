@@ -12,6 +12,8 @@
       </form>
     </div>
   </section>
+
+
 </template>
 
 <script>
@@ -28,7 +30,8 @@ export default {
     searchLocation() {
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${this.searchTerm}&${apiKey}`).then(response => {
         const location = response.data.results[0].geometry.location;
-        this.setLocationAndMarker(location.lat, location.lng);
+        console.log(location);
+        // this.setLocationAndMarker(location.lat, location.lng);
       });
     }
   }
