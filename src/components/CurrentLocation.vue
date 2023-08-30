@@ -37,13 +37,12 @@ export default {
   data() {
     return {
       location: null,
-      searchTerm: null
+      searchTerm: null,
     };
   },
 
   mounted() {
 
-      // Initialize your map here
       // eslint-disable-next-line no-unused-vars, no-undef
       let map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
