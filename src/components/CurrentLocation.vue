@@ -3,14 +3,20 @@
     <!-- Search Location -->
     <section class="ui two column centered grid">
       <div class="column">
-        <form class="ui segment large form">
+        <form class="ui segment large form" @submit.prevent="handleSearch">
           <!-- Displaying the current address -->
           <div class="ui segment">
             <div class="field">
-              <input type="text" v-model="location" placeholder="Enter location" id="autocomplete" />
+              <input
+                type="text"
+                v-model="location"
+                placeholder="Enter location"
+                ref="autocomplete"
+                @keyup.enter="handleSearch"
+              />
               <i class="map marker alternate icon location-icon" @click="getCurrentLocation"></i>
             </div>
-            <button class="ui button">Search</button>
+            <button class="ui button" @click="handleSearch">Search</button>
           </div>
         </form>
       </div>
@@ -32,21 +38,24 @@ export default {
   data() {
     return {
       location: null,
-      searchTerm: null,
+      searchLocation: null,
     };
   },
 
   mounted() {
 
-    new google.maps.places.Autocomplete(
-      document.getElementById("autocomplete"),
+    let autocomplete = new google.maps.places.Autocomplete(this.$refs["autocomplete"],
       {
         bounds: new google.maps.LatLngBounds(
           new google.maps.LatLng(43.6532, -79.3832)
         )
-      }
-    );
+      });
 
+    autocomplete.addListener("place_changed", () => {
+      
+      this.searchLocation = autocomplete.getPlace();
+
+    });
   },
 
   methods: {
@@ -93,8 +102,14 @@ export default {
 
       new google.maps.Marker({
         position: new google.maps.LatLng(lat, lng),
-        map:map
-      })
+        map: map
+      });
+    },
+
+    handleSearch() {
+        if (this.searchLocation && this.searchLocation.geometry) {
+            this.showCurrentLocationOnMap(this.searchLocation.geometry.location.lat(), this.searchLocation.geometry.location.lng());
+        }
     },
 
   }
