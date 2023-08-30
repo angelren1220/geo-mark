@@ -41,7 +41,22 @@ export default {
     };
   },
 
+  mounted() {
+
+      // Initialize your map here
+      // eslint-disable-next-line no-unused-vars, no-undef
+      let map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        // eslint-disable-next-line no-undef
+        center: new google.maps.LatLng(40.689247, -74.044502),
+        // eslint-disable-next-line no-undef
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+  
+  },
+
   methods: {
+
 
     getCurrentLocation() {
 
