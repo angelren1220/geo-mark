@@ -1,37 +1,29 @@
 <template>
-  <!-- Current Location -->
-  <div class="current-location">
-    <button class="ui button" @click="getCurrentLocation"><i class="map marker alternate icon location-icon"></i></button>
-  </div>
-
-  <!-- Search Location -->
-  <section class="ui two column centered grid">
-    <div class="column">
-      <form class="ui segment large form">
-        <!-- Displaying the current address -->
-        <div class="ui segment">
-          <div class="field location-search">
-            <input 
-              type="text"
-              v-model="location" 
-              @keyup.enter="searchLocation"
-              placeholder="Enter location"
-              id="autocomplete"
-            />
+  <div>
+    <!-- Search Location -->
+    <section class="ui two column centered grid">
+      <div class="column">
+        <form class="ui segment large form">
+          <!-- Displaying the current address -->
+          <div class="ui segment">
+            <div class="field">
+              <input type="text" v-model="location" placeholder="Enter location" id="autocomplete" />
+              <i class="map marker alternate icon location-icon" @click="getCurrentLocation"></i>
+            </div>
+            <button class="ui button">Search</button>
           </div>
-          <button class="ui button" @click="searchLocation">Search</button>
-        </div>
-      </form>
-    </div>
-  </section>
+        </form>
+      </div>
+    </section>
 
-  <!-- Map -->
-  <section id="map">
-
-  </section>
+    <!-- Map -->
+    <section id="map">
+    </section>
+  </div>
 </template>
 
 <script>
+/* eslint-disable no-undef, no-unused-vars */
 import axios from 'axios';
 const apiKey = process.env.VUE_APP_GOOGLE_MAPS_API_KEY;
 
@@ -46,18 +38,15 @@ export default {
 
   mounted() {
 
-    // eslint-disable-next-line no-undef
     new google.maps.places.Autocomplete(
-       document.getElementById("autocomplete"),
-       {
-        // eslint-disable-next-line no-undef
+      document.getElementById("autocomplete"),
+      {
         bounds: new google.maps.LatLngBounds(
-          // eslint-disable-next-line no-undef
           new google.maps.LatLng(43.6532, -79.3832)
         )
-       }
-    )
-  
+      }
+    );
+
   },
 
   methods: {
@@ -96,14 +85,16 @@ export default {
     },
 
     showCurrentLocationOnMap(lat, lng) {
-      // eslint-disable-next-line no-undef, no-unused-vars
       let map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
-        // eslint-disable-next-line no-undef
         center: new google.maps.LatLng(lat, lng),
-        // eslint-disable-next-line no-undef
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
+
+      new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        map:map
+      })
     },
 
   }
