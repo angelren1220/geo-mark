@@ -39,10 +39,12 @@ export default {
     return {
       location: null,
       searchLocation: null,
+      markers: []
     };
   },
 
   mounted() {
+    this.initMap();
 
     let autocomplete = new google.maps.places.Autocomplete(this.$refs["autocomplete"],
       {
@@ -60,6 +62,13 @@ export default {
 
   methods: {
 
+    initMap() {
+        this.map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: new google.maps.LatLng(43.6532, -79.3832),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+    },
 
     getCurrentLocation() {
 
@@ -94,16 +103,19 @@ export default {
     },
 
     showCurrentLocationOnMap(lat, lng) {
-      let map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
-        center: new google.maps.LatLng(lat, lng),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+      
+      this.map.panTo(new google.maps.LatLng(lat, lng));
+
+      const newMarker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        map: this.map
       });
 
-      new google.maps.Marker({
-        position: new google.maps.LatLng(lat, lng),
-        map: map
-      });
+      this.markers.push(newMarker);
+
+      for (let marker of this.markers) {
+        marker.setMap(map);
+    }
     },
 
     handleSearch() {
