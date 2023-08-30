@@ -10,7 +10,7 @@
               <input type="text" v-model="location" placeholder="Enter location" ref="autocomplete" />
               <i class="map marker alternate icon location-icon" @click="getCurrentLocation"></i>
             </div>
-            <button class="ui button">Search</button>
+            <button class="ui button search-button">Search</button>
           </div>
         </form>
       </div>
@@ -30,12 +30,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="place in searchedPlaces" :key="place.id">
+          <tr v-for="place in paginatedSearchedPlaces" :key="place.id">
             <td><input type="checkbox" v-model="place.selected"></td>
             <td>{{ place.name }}</td>
           </tr>
         </tbody>
       </table>
+      <div class="pagination-controls">
+        <button class="ui button" @click="prevPage" :disabled="currentPage <= 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button class="ui button" @click="nextPage" :disabled="currentPage >= totalPages">Next</button>
+      </div>
+
     </section>
 
   </div>
@@ -55,7 +61,9 @@ export default {
       markers: [],
       map: null,
       searchedPlaces: [],
-      selectedPlaces: []
+      selectedPlaces: [],
+      currentPage: 1,
+      itemsPerPage: 10
     };
   },
 
@@ -75,6 +83,18 @@ export default {
 
     });
   },
+
+  computed: {
+    paginatedSearchedPlaces() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.searchedPlaces.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.searchedPlaces.length / this.itemsPerPage);
+    }
+  },
+
 
   methods: {
 
@@ -146,6 +166,17 @@ export default {
 
         console.log(this.searchedPlaces);
       }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
     }
 
 
@@ -154,7 +185,7 @@ export default {
 
 </script>
 <style scoped>
-.ui.button {
+.search-button {
   background-color: green;
   color: white;
 }
