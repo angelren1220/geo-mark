@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Search Location -->
-    <section class="ui two column centered grid">
+    <section class="ui two column centered grid" style="position:relative;z-index:1;">
       <div class="column">
         <form class="ui segment large form" @submit.prevent="handleSearch">
           <!-- Displaying the current address -->
@@ -129,7 +129,6 @@ export default {
   left: 0;
   right: 0;
   background: #136F63;
-  z-index: -1;
 }
 </style>
 
