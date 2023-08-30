@@ -9,12 +9,15 @@
     <div class="column">
       <form class="ui segment large form">
         <!-- Displaying the current address -->
-        <div v-if="location">
-          {{ location }}
-        </div>
         <div class="ui segment">
           <div class="field location-search">
-            <input v-model="searchTerm" @keyup.enter="searchLocation" placeholder="Enter location" />
+            <input 
+              type="text"
+              v-model="location" 
+              @keyup.enter="searchLocation"
+              placeholder="Enter location"
+              id="autocomplete"
+            />
           </div>
           <button class="ui button" @click="searchLocation">Search</button>
         </div>
@@ -43,14 +46,17 @@ export default {
 
   mounted() {
 
-      // eslint-disable-next-line no-unused-vars, no-undef
-      let map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
+    // eslint-disable-next-line no-undef
+    new google.maps.places.Autocomplete(
+       document.getElementById("autocomplete"),
+       {
         // eslint-disable-next-line no-undef
-        center: new google.maps.LatLng(40.689247, -74.044502),
-        // eslint-disable-next-line no-undef
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
+        bounds: new google.maps.LatLngBounds(
+          // eslint-disable-next-line no-undef
+          new google.maps.LatLng(43.6532, -79.3832)
+        )
+       }
+    )
   
   },
 
