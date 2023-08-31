@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SearchBox v-model="searchLocation" @search="handleSearch" @getCurrentLocation="getCurrentLocation" />
+    <SearchBox :searchLocation="searchLocation" @search="handleSearch" @getCurrentLocation="getCurrentLocation" />
     <MapSection @map-initialized="setMapInstance" />
     <PlacesTable :paginatedSearchedPlaces="paginatedSearchedPlaces" :currentPage="currentPage" :totalPages="totalPages"
       @next="nextPage" @prev="prevPage" @delete="deleteSelected" />
@@ -100,7 +100,7 @@ export default {
 
       const newMarker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lng),
-        map: this.map,
+        map: this.localMapInstance,
         id: id
       });
       console.log("new marker id", newMarker.id);
