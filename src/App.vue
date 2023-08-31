@@ -1,16 +1,172 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/google-map-logo.png"> -->
-  <CurrentLocation />
+  <div>
+    <SearchBox v-model="searchLocation" @search="handleSearch" @getCurrentLocation="getCurrentLocation" />
+    <MapSection :map="map" />
+    <PlacesTable :paginatedSearchedPlaces="paginatedSearchedPlaces" :currentPage="currentPage" :totalPages="totalPages"
+      @next="nextPage" @prev="prevPage" @delete="deleteSelected" />
+    <LocalTimeDisplay :timeZone="timeZone" :localTime="localTime" />
+  </div>
 </template>
-
 <script>
-import CurrentLocation from './components/CurrentLocation';
+/* eslint-disable no-undef, no-unused-vars */
+import SearchBox from './components/SearchBox.vue';
+import MapSection from './components/MapSection.vue';
+import PlacesTable from './components/PlacesTable.vue';
+import LocalTimeDisplay from './components/LocalTimeDisplay.vue';
+import axios from 'axios';
+import { toRaw } from 'vue';
+const apiKey = process.env.VUE_APP_GOOGLE_MAPS_API_KEY;
 
 export default {
   name: 'App',
   components: {
-    CurrentLocation,
+    SearchBox,
+    MapSection,
+    PlacesTable,
+    LocalTimeDisplay
+  },
+
+  data() {
+    return {
+      location: null,
+      searchLocation: null,
+      markers: [],
+      map: null,
+      searchedPlaces: [],
+      selectedPlaces: [],
+      currentPage: 1,
+      itemsPerPage: 10,
+      timeZone: null,
+      localTime: null
+    };
+  },
+
+  computed: {
+    paginatedSearchedPlaces() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.searchedPlaces.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.searchedPlaces.length / this.itemsPerPage);
+    }
+  },
+
+  methods: {
+
+    getCurrentLocation() {
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          console.log(lat, lng);
+
+          this.getAddressFrom(lat, lng);
+          this.showCurrentLocationOnMap(lat, lng);
+        });
+
+      } else {
+        console.log("Browser dose not support Geolocation API");
+      }
+    },
+
+    getAddressFrom(lat, lng) {
+      axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + `&key=${apiKey}`)
+        .then(response => {
+          if (response.data.error_message) {
+            console.log(response.data.error_message);
+          } else {
+            this.location = response.data.results[0].formatted_address;
+            // console.log(this.location);
+          }
+        })
+        .catch(error => {
+          console.log(error.message);
+        });
+    },
+
+    showCurrentLocationOnMap(lat, lng, id) {
+
+      this.map.panTo(new google.maps.LatLng(lat, lng));
+
+      const newMarker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat, lng),
+        map: this.map,
+        id: id
+      });
+      console.log("new marker id", newMarker.id);
+      this.markers.push(newMarker);
+    },
+
+    handleSearch() {
+      if (this.searchLocation && this.searchLocation.geometry) {
+        const lat = this.searchLocation.geometry.location.lat();
+        const lng = this.searchLocation.geometry.location.lng();
+        const id = Date.now();
+        this.showCurrentLocationOnMap(lat, lng, id);
+        console.log("newId is", id);
+        // Save to searchedPlaces
+        this.searchedPlaces.push({
+          id: id,
+          name: this.searchLocation.name,
+          lat: lat,
+          lng: lng
+        });
+
+        //console.log(this.searchedPlaces);
+
+        this.fetchTimeZone(lat, lng);
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+
+    deleteSelected() {
+      const selectedIds = this.searchedPlaces.filter(place => place.selected).map(place => place.id);
+
+      // Filter out markers that are not in the list of selected IDs and remove them from the map
+      this.markers = this.markers.filter(marker => {
+        if (selectedIds.includes(toRaw(marker).id)) {
+          toRaw(marker).setMap(null);
+          return false;
+        }
+        return true;
+      });
+
+      // Now, filter out the selected places from the searchedPlaces array
+      this.searchedPlaces = this.searchedPlaces.filter(place => !place.selected);
+    },
+
+    fetchTimeZone(lat, lng) {
+      const timestamp = Math.floor(Date.now() / 1000);
+      axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${apiKey}`)
+        .then(response => {
+          this.timeZone = response.data.timeZoneId;
+          this.updateLocalTime(response.data.rawOffset + response.data.dstOffset);  // raw offset + dst offset
+        })
+        .catch(error => {
+          console.log("Error fetching timezone:", error);
+        });
+    },
+
+    updateLocalTime(offsetInSeconds) {
+      const date = new Date();
+      const utcTime = date.getTime() + date.getTimezoneOffset() * 60000; // Convert local time to UTC in milliseconds
+      const localTimeInMilliseconds = utcTime + (offsetInSeconds * 1000);
+      this.localTime = new Date(localTimeInMilliseconds).toLocaleTimeString();
+    }
   }
+
 }
 </script>
 
