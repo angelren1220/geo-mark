@@ -1,7 +1,7 @@
 <template>
   <div>
     <SearchBox v-model="searchLocation" @search="handleSearch" @getCurrentLocation="getCurrentLocation" />
-    <MapSection :map="map" />
+    <MapSection @map-initialized="setMapInstance" />
     <PlacesTable :paginatedSearchedPlaces="paginatedSearchedPlaces" :currentPage="currentPage" :totalPages="totalPages"
       @next="nextPage" @prev="prevPage" @delete="deleteSelected" />
     <LocalTimeDisplay :timeZone="timeZone" :localTime="localTime" />
@@ -28,7 +28,7 @@ export default {
 
   data() {
     return {
-      location: null,
+      localMapInstance: null,
       searchLocation: null,
       markers: [],
       map: null,
@@ -54,6 +54,10 @@ export default {
 
   methods: {
 
+    setMapInstance(map) {
+      this.localMapInstance = map;
+    },
+
     getCurrentLocation() {
 
       if (navigator.geolocation) {
@@ -77,8 +81,8 @@ export default {
           if (response.data.error_message) {
             console.log(response.data.error_message);
           } else {
-            this.location = response.data.results[0].formatted_address;
-            // console.log(this.location);
+            this.searchLocation = response.data.results[0].formatted_address;
+            console.log(this.searchLocation);
           }
         })
         .catch(error => {
@@ -87,8 +91,12 @@ export default {
     },
 
     showCurrentLocationOnMap(lat, lng, id) {
+      if (this.localMapInstance) {
 
-      this.map.panTo(new google.maps.LatLng(lat, lng));
+        console.log("pannnnnn");
+        this.localMapInstance.panTo(new google.maps.LatLng(lat, lng));
+
+      }
 
       const newMarker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lng),

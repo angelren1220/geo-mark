@@ -24,6 +24,7 @@ export default {
         center: new google.maps.LatLng(43.6532, -79.3832),
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
+      this.$emit('map-initialized', this.localMapInstance);
     }
   }
 }
