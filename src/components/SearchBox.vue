@@ -4,7 +4,8 @@
       <form class="ui segment large form" @submit.prevent="$emit('search')">
         <div class="ui segment">
           <div class="field">
-            <input type="text" :value="searchLocation" @input="updateLocation" placeholder="Enter location" ref="autocomplete" />
+            <input type="text" :value="searchLocationName" @input="updateLocation" placeholder="Enter location"
+              ref="autocomplete" />
             <i class="map marker alternate icon location-icon" @click="$emit('getCurrentLocation')"></i>
           </div>
           <button class="ui button search-button">Search</button>
@@ -18,7 +19,9 @@
 /* eslint-disable no-undef, no-unused-vars */
 
 export default {
-  props: ['searchLocation'],
+  props: {
+    searchLocationName: String
+  },
 
   mounted() {
     let autocomplete = new google.maps.places.Autocomplete(this.$refs["autocomplete"],
@@ -30,7 +33,9 @@ export default {
 
     autocomplete.addListener("place_changed", () => {
 
-      this.$emit('place-selected', autocomplete.getPlace());
+      const place = autocomplete.getPlace();
+      this.$emit('place-selected', place);
+      this.$emit('update:searchLocationName', place.formatted_address || place.name);
 
     });
   },

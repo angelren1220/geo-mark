@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SearchBox :searchLocation="searchLocation" @search="handleSearch" @place-selected="updateSearchLocation"
+    <SearchBox :searchLocationName="searchLocationName" @search="handleSearch" @place-selected="updateSearchLocation"
       @getCurrentLocation="getCurrentLocation" />
     <MapSection @map-initialized="setMapInstance" />
     <PlacesTable :paginatedSearchedPlaces="paginatedSearchedPlaces" :currentPage="currentPage" :totalPages="totalPages"
@@ -31,6 +31,7 @@ export default {
     return {
       localMapInstance: null,
       searchLocation: null,
+      searchLocationName: '',
       markers: [],
       map: null,
       searchedPlaces: [],
@@ -111,6 +112,7 @@ export default {
 
     updateSearchLocation(place) {
       this.searchLocation = place;
+      this.searchLocationName = place.formatted_address || place.name;
     },
 
     handleSearch() {
