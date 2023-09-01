@@ -4,9 +4,11 @@
       <thead>
         <tr>
           <th>
-            <button class="ui button" @click="deleteSelected">Delete Selected</button>
+            <i class="trash alternate icon" @click="deleteSelected"></i>
           </th>
-          <th>Searched Places</th>
+          <th>
+            <i class="history icon"></i>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -17,9 +19,13 @@
       </tbody>
     </table>
     <div class="pagination-controls">
-      <button class="ui button" @click="prevPage" :disabled="currentPage <= 1">Previous</button>
+      <button class="ui button" @click="prevPage" :disabled="currentPage <= 1">
+        <i class="angle left icon" @click="prevPage" :disabled="currentPage <= 1"></i>
+      </button>
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button class="ui button" @click="nextPage" :disabled="currentPage >= totalPages">Next</button>
+      <button class="ui button" @click="nextPage" :disabled="currentPage >= totalPages">
+        <i class="angle right icon"></i>
+      </button>
     </div>
   </section>
 </template>
@@ -42,12 +48,10 @@ export default {
 </script>
 
 <style scoped>
-
 .pagination {
   position: absolute;
   bottom: 0;
   right: 0;
   z-index: 1;
 }
-
 </style>
