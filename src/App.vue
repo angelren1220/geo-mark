@@ -43,6 +43,7 @@ export default {
     };
   },
 
+  // Paginatied numbers
   computed: {
     paginatedSearchedPlaces() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -56,33 +57,22 @@ export default {
 
   methods: {
 
-
     setMapInstance(map) {
       this.localMapInstance = map;
     },
 
     getCurrentLocation() {
 
+      // get coordinates of current location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           console.log(lat, lng);
 
+          // use coordinats to get address, mark on map, and time
           this.getAddressFrom(lat, lng);
           this.showCurrentLocationOnMap(lat, lng);
-
-          // // Add to searchedPlaces
-          // const id = Date.now();
-
-          // console.log("current location id", id);
-          // console.log("push current location to searched places", this.location);
-          // this.searchedPlaces.push({
-          //   id: id,
-          //   name: this.searchLocationName,
-          //   lat: lat,
-          //   lng: lng
-          // });
 
           this.fetchTimeZone(lat, lng);
         });
@@ -93,13 +83,16 @@ export default {
     },
 
     getAddressFrom(lat, lng) {
+
+      // get location info
       axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + `&key=${apiKey}`)
         .then(response => {
           if (response.data.error_message) {
             console.log(response.data.error_message);
           } else {
+
+            // format the data as readable address
             this.searchLocationName = response.data.results[0].formatted_address;
-            console.log(this.searchLocationName);
           }
         })
         .catch(error => {
@@ -110,37 +103,37 @@ export default {
     showCurrentLocationOnMap(lat, lng, id) {
       if (this.localMapInstance) {
 
-        console.log("pannnnnn");
+        // pan to current location on map
         this.localMapInstance.panTo(new google.maps.LatLng(lat, lng));
 
       }
 
+      // create a mark on map and store it
       const newMarker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lng),
         map: this.localMapInstance,
         id: id
       });
-      console.log("new marker id", newMarker.id);
+
       this.markers.push(newMarker);
     },
 
+    // update the location for text box after search or locate
     updateSearchLocation(place) {
       this.searchLocation = place;
       this.searchLocationName = place.formatted_address || place.name;
 
-      console.log("update search box", this.searchLocationName);
     },
 
+    // after search form submitted, handle search
     handleSearch() {
-
-      console.log("searching...", this.searchLocation);
 
       if (this.searchLocation && this.searchLocation.geometry) {
         const lat = this.searchLocation.geometry.location.lat();
         const lng = this.searchLocation.geometry.location.lng();
         const id = Date.now();
         this.showCurrentLocationOnMap(lat, lng, id);
-        console.log("newId is", id);
+
         // Save to searchedPlaces
         this.searchedPlaces.push({
           id: id,
@@ -149,8 +142,7 @@ export default {
           lng: lng
         });
 
-        console.log("searched place is: ", this.searchedPlaces);
-
+        // update time
         this.fetchTimeZone(lat, lng);
       }
     },
@@ -166,10 +158,11 @@ export default {
       }
     },
 
+    // delte method of searched history
     deleteSelected() {
       const selectedIds = this.searchedPlaces.filter(place => place.selected).map(place => place.id);
 
-      // Filter out markers that are not in the list of selected IDs and remove them from the map
+      // filter out markers that are not in the list of selected IDs and remove them from the map
       this.markers = this.markers.filter(marker => {
         if (selectedIds.includes(toRaw(marker).id)) {
           toRaw(marker).setMap(null);
@@ -178,10 +171,11 @@ export default {
         return true;
       });
 
-      // Now, filter out the selected places from the searchedPlaces array
+      // filter out the selected places from the searchedPlaces array
       this.searchedPlaces = this.searchedPlaces.filter(place => !place.selected);
     },
 
+    // get current time based on coordinates
     fetchTimeZone(lat, lng) {
       const timestamp = Math.floor(Date.now() / 1000);
       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${apiKey}`)
@@ -194,6 +188,7 @@ export default {
         });
     },
 
+    // update local time and compute it as readable time
     updateLocalTime(offsetInSeconds) {
       const date = new Date();
       const utcTime = date.getTime() + date.getTimezoneOffset() * 60000; // Convert local time to UTC in milliseconds

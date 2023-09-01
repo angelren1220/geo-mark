@@ -24,13 +24,16 @@ export default {
   },
 
   mounted() {
+
+    // auto complete address
     let autocomplete = new google.maps.places.Autocomplete(this.$refs["autocomplete"],
       {
         bounds: new google.maps.LatLngBounds(
           new google.maps.LatLng(43.6532, -79.3832)
         )
       });
-
+    
+    // change the text as place changes
     autocomplete.addListener("place_changed", () => {
 
       const place = autocomplete.getPlace();
