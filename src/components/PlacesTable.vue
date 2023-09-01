@@ -50,7 +50,7 @@ export default {
 <style scoped>
 .pagination {
   position: absolute;
-  bottom: 0;
+  top: 100px;
   right: 0;
   z-index: 1;
 }

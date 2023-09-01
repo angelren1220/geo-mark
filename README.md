@@ -2,6 +2,8 @@
 
 GeoMark is a web application designed to help users effortlessly locate geographical coordinates, search for specific locales, view them on a map, and manage a list of explored places.
 
+!["Full-window size app"]()
+
 ## Features
 
 - **Acquire Current Location**: Instantly fetch and showcase your current geographical position on the map.
@@ -27,7 +29,7 @@ GeoMark is a web application designed to help users effortlessly locate geograph
    npm install
    ```
 
-3. **Plant Your Google Maps API Key**: Unravel the specific file, then swap `YOUR_GOOGLE_MAPS_API_KEY` with your genuine key.
+3. **Plant Your Google Maps API Key**: Make a .env from .env.example, then swap `YOUR_GOOGLE_MAPS_API_KEY` with your genuine key.
 
 4. **Power Up the Development Server**:
    ```bash
@@ -38,10 +40,10 @@ Your GeoMark should now be gallivanting on `http://localhost:8080/`.
 
 ## Guided Tour
 
-1. **Spot Current Location**: A single tap on "Get Current Location" will beacon your coordinates.
-2. **Scout for a Location**: Punch in a name and either strike Enter or tap "Search".
+1. **Spot Current Location**: A single tap on locate button will beacon your coordinates.
+2. **Scout for a Location**: Punch in a name or address, it will be auto complated, select desired one and either strike Enter or tap "Search".
 3. **Organize Your Discoveries**: The table is your treasure map. Use the checkboxes wisely and swipe away locations with "Delete".
-4. **Time Travels**: Just below the map, the local time and timezone details of your recent discovery await.
+4. **Time Travels**: Just above the map, the local time and timezone details of your recent discovery await.
 
 ## Join the Adventure (Contributing)
 
