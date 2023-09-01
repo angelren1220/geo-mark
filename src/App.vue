@@ -1,6 +1,7 @@
 <template>
   <div>
-    <SearchBox :searchLocation="searchLocation" @search="handleSearch" @getCurrentLocation="getCurrentLocation" />
+    <SearchBox :searchLocation="searchLocation" @search="handleSearch" @place-selected="updateSearchLocation"
+      @getCurrentLocation="getCurrentLocation" />
     <MapSection @map-initialized="setMapInstance" />
     <PlacesTable :paginatedSearchedPlaces="paginatedSearchedPlaces" :currentPage="currentPage" :totalPages="totalPages"
       @next="nextPage" @prev="prevPage" @delete="deleteSelected" />
@@ -53,6 +54,7 @@ export default {
   },
 
   methods: {
+
 
     setMapInstance(map) {
       this.localMapInstance = map;
@@ -107,7 +109,14 @@ export default {
       this.markers.push(newMarker);
     },
 
+    updateSearchLocation(place) {
+      this.searchLocation = place;
+    },
+
     handleSearch() {
+
+      console.log("searching...", this.searchLocation);
+
       if (this.searchLocation && this.searchLocation.geometry) {
         const lat = this.searchLocation.geometry.location.lat();
         const lng = this.searchLocation.geometry.location.lng();
@@ -122,7 +131,7 @@ export default {
           lng: lng
         });
 
-        //console.log(this.searchedPlaces);
+        console.log("searched place is: ", this.searchedPlaces);
 
         this.fetchTimeZone(lat, lng);
       }

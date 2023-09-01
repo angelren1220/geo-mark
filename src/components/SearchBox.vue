@@ -20,15 +20,6 @@
 export default {
   props: ['searchLocation'],
 
-  watch: {
-  searchLocation(newVal, oldVal) {
-    console.log('Old Value:', oldVal);
-    console.log('New Value:', newVal);
-  }
-},
-
-
-
   mounted() {
     let autocomplete = new google.maps.places.Autocomplete(this.$refs["autocomplete"],
       {
