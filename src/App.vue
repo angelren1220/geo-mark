@@ -71,6 +71,15 @@ export default {
 
           this.getAddressFrom(lat, lng);
           this.showCurrentLocationOnMap(lat, lng);
+
+          // Add to searchedPlaces
+          const id = Date.now();
+          this.searchedPlaces.push({
+            id: id,
+            name: this.searchLocation,
+            lat: lat,
+            lng: lng
+          });
         });
 
       } else {
