@@ -1,8 +1,7 @@
 <template>
-  <div class="localtime" v-if="timeZone && localTime">
-    <p>Last Search</p>
-    <p>Time Zone: {{ timeZone }}</p>
-    <p>Local Time: {{ localTime }}</p>
+  <div class="localtime" >
+    <p>{{ timeZone || "Fetching time zone..." }}</p>
+    <p>{{ localTime || "Fetching local time..." }}</p>
   </div>
 </template>
 

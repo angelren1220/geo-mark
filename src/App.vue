@@ -80,6 +80,8 @@ export default {
             lat: lat,
             lng: lng
           });
+
+          this.fetchTimeZone(lat, lng);
         });
 
       } else {
