@@ -14,6 +14,9 @@ GeoMark is a web application designed to help users effortlessly locate geograph
 ## Prerequisites
 
 - **Node.js and npm**: Ensure Node.js and npm are in your artillery. If they're missing, enlist them [here](https://nodejs.org/).
+
+- **Vue.js**: Ascertain that Vue.js is on your toolkit. If it's absent, recruit it [here](https://vuejs.org/guide/quick-start.html).
+
 - **Google Maps API Key**: To unfold the maps and geocoding marvels, retrieve your key from the [Google Cloud Console](https://console.cloud.google.com/).
 
 ## Getting Started with GeoMark
@@ -38,17 +41,21 @@ GeoMark is a web application designed to help users effortlessly locate geograph
 
 Your GeoMark should now be gallivanting on `http://localhost:8080/`.
 
+## Dependencies
+- Vue.js (^3.2.13): The beating heart of our application. Vue is a progressive JavaScript framework used to develop interactive web interfaces. More about Vue.js
+
+- Vue Router (^4.2.4): Our navigator across the vast seas of the application's components. It's the official router for Vue.js. More about Vue Router
+
+- Axios (^1.5.0): Our trusted messenger that fetches data from distant lands (APIs). Axios is a promise-based HTTP client for the browser and Node.js. More about Axios
+
+- Core-js (^3.8.3): Ensures that GeoMark's charm works across all lands (browsers). It's a modular standard library for JavaScript, which includes polyfills for ECMAScript up to 2019.
+
+## Styling
+- Semantic UI (2.5.0): A development framework that empowers our application with user-friendly high-quality HTML, CSS, and JS components.
+
 ## Guided Tour
 
-1. **Spot Current Location**: A single tap on locate button will beacon your coordinates.
-2. **Scout for a Location**: Punch in a name or address, it will be auto complated, select desired one and either strike Enter or tap "Search".
-3. **Organize Your Discoveries**: The table is your treasure map. Use the checkboxes wisely and swipe away locations with "Delete".
+1. **Spot Current Location**: A single tap on the locate button will beacon your coordinates.
+2. **Scout for a Location**: Punch in a name or address, and it will be auto-completed. Select the desired location and tap "Search".
+3. **Organize Your Discoveries**: The table is your treasure map. Use the checkboxes wisely to select multiple entries, and swipe away unwanted locations with the "Delete" button.
 4. **Time Travels**: Just above the map, the local time and timezone details of your recent discovery await.
-
-## Join the Adventure (Contributing)
-
-Should the winds of adventure beckon you, fork this repository and make your mark. All treasure maps (pull requests) are most welcome.
-
-## Treasure Map (License)
-
-MIT License. The [LICENSE](LICENSE) parchment holds the intricate details.
