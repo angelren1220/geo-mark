@@ -2,7 +2,7 @@
 
 GeoMark is a web application designed to help users effortlessly locate geographical coordinates, search for specific locales, view them on a map, and manage a list of explored places.
 
-!["Full-window size app"]()
+!["Full-window size app"](https://github.com/angelren1220/geo-mark/blob/main/docs/full-window-app.png?raw=true)
 
 ## Features
 
