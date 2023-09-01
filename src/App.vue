@@ -72,14 +72,17 @@ export default {
           this.getAddressFrom(lat, lng);
           this.showCurrentLocationOnMap(lat, lng);
 
-          // Add to searchedPlaces
-          const id = Date.now();
-          this.searchedPlaces.push({
-            id: id,
-            name: this.searchLocation,
-            lat: lat,
-            lng: lng
-          });
+          // // Add to searchedPlaces
+          // const id = Date.now();
+
+          // console.log("current location id", id);
+          // console.log("push current location to searched places", this.location);
+          // this.searchedPlaces.push({
+          //   id: id,
+          //   name: this.searchLocationName,
+          //   lat: lat,
+          //   lng: lng
+          // });
 
           this.fetchTimeZone(lat, lng);
         });
@@ -95,8 +98,8 @@ export default {
           if (response.data.error_message) {
             console.log(response.data.error_message);
           } else {
-            this.searchLocation = response.data.results[0].formatted_address;
-            console.log(this.searchLocation);
+            this.searchLocationName = response.data.results[0].formatted_address;
+            console.log(this.searchLocationName);
           }
         })
         .catch(error => {
@@ -124,6 +127,8 @@ export default {
     updateSearchLocation(place) {
       this.searchLocation = place;
       this.searchLocationName = place.formatted_address || place.name;
+
+      console.log("update search box", this.searchLocationName);
     },
 
     handleSearch() {
